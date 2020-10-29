@@ -36,6 +36,8 @@ MFFont *pText = NULL;
 
 MFStringTable *pStrings = NULL;
 
+void *user;
+
 extern MenuItemBool bRenderNoteTimes;
 extern MenuItemBool bMetronome;
 extern MenuItemBool bClaps;
@@ -249,8 +251,8 @@ void Game_InitFilesystem()
 #endif
 	MFFileSystem_Mount(hNative, &mountData);
 
-	if(pInitFujiFS)
-		pInitFujiFS();
+	//if(pInitFujiFS)
+		//pInitFujiFS(0);
 }
 
 // initialise game stuff after fuji has finished initialising.
@@ -383,11 +385,14 @@ void Game_Draw()
 
 void Game_Deinit()
 {
+
 	MFCALLSTACK;
 
-	dBScreen::GetCurrent()->Deselect();
+	//dBScreen::GetCurrent()->Deselect();
 
 	SaveConfigFile("Config");
+
+	exit(0);
 
 	dBRuntimeArgs::Deinit();
 	dBActionManager::DeinitManager();
@@ -437,16 +442,16 @@ int GameMain(MFInitParams *pInitParams)
 	gDefaults.display.pIcon = MAKEINTRESOURCE(IDI_ICON1);
 #endif
 
-	pInitParams->pAppTitle = "FeedBack Chart Editor v0.10.0-beta";
+	pInitParams->pAppTitle = "FeedBack Chart Editor v0.99";
 
 	Fuji_CreateEngineInstance();
 
-	MFSystem_RegisterSystemCallback(MFCB_InitDone, Game_Init);
-	MFSystem_RegisterSystemCallback(MFCB_Update, Game_Update);
-	MFSystem_RegisterSystemCallback(MFCB_Draw, Game_Draw);
-	MFSystem_RegisterSystemCallback(MFCB_Deinit, Game_Deinit);
+	MFSystem_RegisterSystemCallback(MFCB_InitDone, (MFSystemCallbackFunction)(*Game_Init)); // wtf happened here
+	MFSystem_RegisterSystemCallback(MFCB_Update, (MFSystemCallbackFunction)(*Game_Update));
+	MFSystem_RegisterSystemCallback(MFCB_Draw, (MFSystemCallbackFunction)(*Game_Draw));
+	MFSystem_RegisterSystemCallback(MFCB_Deinit, (MFSystemCallbackFunction)(*Game_Deinit));
 
-	pInitFujiFS = MFSystem_RegisterSystemCallback(MFCB_FileSystemInit, Game_InitFilesystem);
+	pInitFujiFS = MFSystem_RegisterSystemCallback(MFCB_FileSystemInit, (MFSystemCallbackFunction)(Game_InitFilesystem));
 
 	int r = MFMain(pInitParams);
 

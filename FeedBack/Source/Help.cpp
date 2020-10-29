@@ -82,6 +82,7 @@ void HelpScreen::Draw()
 	// draw headings
 	CenterText(28, 44, MFVector::yellow, MFStr("%s - %s", MFTranslation_GetString(pStrings, TITLE), MFTranslation_GetString(pStrings, MENU_HELP)), pHeading);
 	CenterText(rect.height - 66, 36, MFVector::red, MFTranslation_GetString(pStrings, MENU_PRESS_ESC), pHeading);
+	CenterText(44, 36, MFVector::green, "AAAA", pText);
 
 	// draw text
 	float y = 80.0f - yOffset;
